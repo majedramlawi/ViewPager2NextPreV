@@ -5,13 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class ViewPagerAdapter(private val context: Context, private val dataValue: List<Question>, private val condition: ConditionViewPager) :
+class ViewPagerAdapter(private val callbackListener: CallbackListener,private val context: Context, private val dataValue: List<Question>, private val condition: ConditionViewPager) :
     RecyclerView.Adapter<ViewPagerAdapter.ViewPagerViewHolder>() {
 
     override fun getItemCount(): Int = dataValue.size
@@ -24,7 +23,7 @@ class ViewPagerAdapter(private val context: Context, private val dataValue: List
     override fun onBindViewHolder(holder: ViewPagerViewHolder, position: Int) {
         condition.condition(position,dataValue.size)
         dataValue[position].let {
-            holder.bindProduct( it)
+            holder.bindProduct(position, it)
         }
     }
 
@@ -34,13 +33,16 @@ class ViewPagerAdapter(private val context: Context, private val dataValue: List
         val rv_answers: RecyclerView = view.findViewById(R.id.rv_answers)
         val txt: TextView = view.findViewById(R.id.tv_question)
 
-        fun bindProduct(question: Question){
+        fun bindProduct(position: Int, question: Question){
+
             txt.text=question.question
 
             val isSingleSelect=true
             val selectedAnswer = mutableListOf<Answer>()
 
             val adapter = AnswersAdapter(context, question.answers){ answer, itemView ->
+
+                callbackListener.onDataReceived(answer)
                 val tv_answer=itemView!!.findViewById<TextView>(R.id.tv_answer)
 
                 if(selectedAnswer.contains(answer)) {
@@ -57,14 +59,12 @@ class ViewPagerAdapter(private val context: Context, private val dataValue: List
                 //Log.e("answer",answer.toString())
 
             }
-            //adapter.selectAll()
+
 
             val layoutManager = GridLayoutManager(context,1, LinearLayoutManager.VERTICAL,false)
 
             rv_answers.layoutManager = layoutManager
             rv_answers.adapter = adapter
-
-
 
         }
 

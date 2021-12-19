@@ -4,7 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/majed/AndroidStudioProjects/ViewPager2New/app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="..\:/Users/majed/AndroidStudioProjects/ViewPager2New/app/src/main/res/layout/item_page.xml" value="0.2" />
+        <entry key="..\:/Users/majed/AndroidStudioProjects/ViewPager2New/app/src/main/res/layout/answer_item.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/majed/AndroidStudioProjects/ViewPager2New/app/src/main/res/layout/item_page.xml" value="0.22" />
       </map>
     </option>
   </component>

@@ -36,7 +36,7 @@ class AnswersAdapter(val context: Context, val answers: List<Answer>, val itemCl
         val tv_answer=itemView!!.findViewById<TextView>(R.id.tv_answer)
 
 
-        @SuppressLint("SetTextI18n")
+
         fun bindProduct(position: Int, answer:Answer){
 
             tv_answer.text=answer.answer

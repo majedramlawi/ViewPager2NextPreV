@@ -4,22 +4,28 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
-import android.widget.Toast
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import me.relex.circleindicator.CircleIndicator3
 
-class MainActivity : AppCompatActivity(), ConditionViewPager {
+class MainActivity : AppCompatActivity(), ConditionViewPager , CallbackListener{
 
     private val data = mutableListOf<String>()
     private lateinit var viewPager: ViewPager2
     private lateinit var indicator: CircleIndicator3
     private lateinit var btnNext: Button
     private lateinit var btnBack: Button
+    private lateinit var counter: TextView
 
+    val selectedAnswers = mutableListOf<Answer>()
+
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
 
         val question = mutableListOf<Question>()
         val answersA = mutableListOf<Answer>()
@@ -43,24 +49,29 @@ class MainActivity : AppCompatActivity(), ConditionViewPager {
         question.add(Question(3,"What is C",true,answersA))
 
         castView()
-        addToList()
+        //addToList()
 
-        viewPager.adapter = ViewPagerAdapter(this,question, this)
+        viewPager.adapter = ViewPagerAdapter(this,this,question, this)
         viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-
+        viewPager.isUserInputEnabled = false//disable swiping in viewpager2
         indicator.setViewPager(viewPager)
 
-        btnNext.setOnClickListener {
 
+        btnNext.setOnClickListener {
+            readData()
             val currPos: Int = viewPager.currentItem
+
+
             if ((currPos + 1) != data.size) {
                 viewPager.currentItem = currPos + 1
             }
 
-            if (currPos+1 == data.size) {
+            if (viewPager.currentItem+1 == question.size)
                 btnNext.text = "Submit"
-            }else
+            else
                 btnNext.text = "Next"
+
+            counter.text = "${viewPager.currentItem+1} / ${question.size}"
 
         }
 
@@ -70,9 +81,24 @@ class MainActivity : AppCompatActivity(), ConditionViewPager {
             if (currPos != 0) {
                 viewPager.currentItem = currPos - 1
             }
+
+            if (viewPager.currentItem+1 == question.size)
+                btnNext.text = "Submit"
+            else
+                btnNext.text = "Next"
+
+            counter.text = "${viewPager.currentItem+1} / ${question.size}"
         }
 
     }
+
+    private fun readData(){
+        selectedAnswers.forEach {
+            Log.e("selectedAnswers:",it.answer)
+        }
+
+    }
+
 
     private fun castView() {
 
@@ -81,21 +107,32 @@ class MainActivity : AppCompatActivity(), ConditionViewPager {
         btnNext = findViewById(R.id.btn_next)
         btnBack = findViewById(R.id.btn_back)
 
+        counter = findViewById(R.id.tv_count)
+
     }
 
-    private fun addToList() {
+    /*private fun addToList() {
         for (item in 1..10) {
             data.add("Question $item")
         }
-    }
+    }*/
 
 
+    @SuppressLint("SetTextI18n")
     override fun condition(position: Int, fullSize: Int) {
 
         Log.e("position",position.toString())
         Log.e("fullSize",fullSize.toString())
         //Toast.makeText(this, "$position / $fullSize", Toast.LENGTH_SHORT).show()
 
+
+
+    }
+
+    override fun onDataReceived(answer: Answer) {
+        Log.e("answer",answer.answer)
+        if(!selectedAnswers.contains(answer))
+        selectedAnswers.add(answer)
     }
 }
 
