@@ -20,15 +20,35 @@ class MainActivity : AppCompatActivity(), ConditionViewPager {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val question = mutableListOf<Question>()
+        val answersA = mutableListOf<Answer>()
+        val answersB = mutableListOf<Answer>()
+        //question(1,"What is Your name",0,answersA)
+
+        answersA.add(Answer(1,"A",true))
+        answersA.add(Answer(2,"B",false))
+        answersA.add(Answer(3,"C",false))
+        answersA.add(Answer(4,"D",false))
+        //Log.e("comment_postCD",answersA.toString())
+        answersB.add(Answer(1,"AX",true))
+        answersB.add(Answer(2,"BX",false))
+        answersB.add(Answer(3,"CX",true))
+        answersB.add(Answer(4,"DX",false))
+
+        question.add(Question(1,"What is A",false,answersA))
+
+        question.add(Question(2,"What is B",true,answersB))
+
+        question.add(Question(3,"What is C",true,answersA))
+
         castView()
         addToList()
 
-        viewPager.adapter = ViewPagerAdapter(data, this)
+        viewPager.adapter = ViewPagerAdapter(this,question, this)
         viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 
         indicator.setViewPager(viewPager)
-
-
 
         btnNext.setOnClickListener {
 
@@ -69,16 +89,22 @@ class MainActivity : AppCompatActivity(), ConditionViewPager {
         }
     }
 
-    @SuppressLint("SetTextI18n")
+
     override fun condition(position: Int, fullSize: Int) {
-
-
 
         Log.e("position",position.toString())
         Log.e("fullSize",fullSize.toString())
         //Toast.makeText(this, "$position / $fullSize", Toast.LENGTH_SHORT).show()
 
     }
-
-
 }
+
+data class Question(val id:Int,
+                    val question:String,
+                    val is_multi:Boolean,
+                    val answers:List<Answer>
+)
+
+data class Answer(val id:Int,
+                  val answer:String,
+                  val is_correct: Boolean)
